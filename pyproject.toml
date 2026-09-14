@@ -1,0 +1,20 @@
+[project]
+name = "ims-mobile"
+version = "0.4.0"
+dependencies = [
+  "flet>=0.86.0",
+  "requests>=2.31.0",
+  "flet-camera>=0.1.0",
+  "flet-permission-handler>=0.1.0",
+  "pyzbar>=0.1.9",
+  "Pillow>=10.0.0",
+]
+
+[tool.flet]
+permissions = ["camera"]
+
+[tool.flet.android.permission]
+"android.permission.CAMERA" = true
+
+[tool.flet.android.feature]
+"android.hardware.camera" = true
