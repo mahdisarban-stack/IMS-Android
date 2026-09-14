@@ -16,7 +16,7 @@ try:
 except Exception:
     decode_barcodes = None
 
-APP_DIR = Path(ft.app_storage_path() or Path.home() / ".ims_mobile")
+APP_DIR = Path(os.getenv("FLET_APP_STORAGE_DATA") or (Path.home() / ".ims_mobile"))
 APP_DIR.mkdir(parents=True, exist_ok=True)
 QUEUE_FILE = APP_DIR / "pending_operations.json"
 CONFIG_FILE = APP_DIR / "config.json"
