@@ -16,7 +16,7 @@ try:
 except Exception:
     decode_barcodes = None
 
-APP_DIR = Path(os.getenv("FLET_APP_STORAGE_DATA") or (Path.home() / ".ims_mobile"))
+APP_DIR = Path(ft.app_storage_path() or Path.home() / ".ims_mobile")
 APP_DIR.mkdir(parents=True, exist_ok=True)
 QUEUE_FILE = APP_DIR / "pending_operations.json"
 CONFIG_FILE = APP_DIR / "config.json"
@@ -42,10 +42,10 @@ def main(page: ft.Page):
     config = load_json(CONFIG_FILE, {"api_url": "http://192.168.1.100:5000", "token": ""})
     queue = load_json(QUEUE_FILE, [])
 
-    api_url = ft.TextField(label="آدرس سرور PC", value=config.get("api_url", ""), text_direction=ft.TextDirection.LTR)
-    token = ft.TextField(label="توکن (اختیاری)", value=config.get("token", ""), password=True, text_direction=ft.TextDirection.LTR)
+    api_url = ft.TextField(label="آدرس سرور PC", value=config.get("api_url", ""), rtl=False)
+    token = ft.TextField(label="توکن (اختیاری)", value=config.get("token", ""), password=True, rtl=False)
     status = ft.Text("آماده", color=ft.Colors.GREEN)
-    barcode = ft.TextField(label="بارکد کالا", autofocus=True, text_direction=ft.TextDirection.LTR)
+    barcode = ft.TextField(label="بارکد کالا", autofocus=True, rtl=False)
     product_info = ft.Text("هنوز کالایی انتخاب نشده")
     qty = ft.TextField(label="تعداد", value="1", keyboard_type=ft.KeyboardType.NUMBER)
     unit = ft.Dropdown(label="واحد", value="تکی", options=[ft.dropdown.Option("تکی"), ft.dropdown.Option("کارتن")])
@@ -267,3 +267,4 @@ def main(page: ft.Page):
 
 if __name__ == "__main__":
     ft.app(target=main)
+
