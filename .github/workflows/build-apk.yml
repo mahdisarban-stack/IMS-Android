@@ -11,30 +11,22 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v5
+      - name: Checkout repository
+        uses: actions/checkout@v6
 
-      - name: Setup Python 3.12
-        uses: actions/setup-python@v6
+      - name: Build Android APK
+        id: build
+        uses: flet-dev/flet-build-action@v1
         with:
-          python-version: "3.12"
+          target: apk
+          runner-python-version: "3.12"
+          bundled-python-version: "3.12"
+          build-number: ${{ github.run_number }}
 
-      - name: Install Flet CLI
-        run: |
-          python -m pip install --upgrade pip
-          python -m pip install flet-cli==0.86.5
-
-      - name: Build release APK
-        run: |
-          flet build apk --python-version 3.12 --permissions camera
-
-      - name: Show APK files
-        run: |
-          find . -type f -name "*.apk" -print
-
-      - name: Upload APK artifact
-        uses: actions/upload-artifact@v4
+      - name: Upload APK
+        uses: actions/upload-artifact@v7
         with:
-          name: IMS-Android-APK
-          path: build/**/*.apk
+          path: ${{ steps.build.outputs.archive-path }}
+          archive: false
           if-no-files-found: error
+          overwrite: true
