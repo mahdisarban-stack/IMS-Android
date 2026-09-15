@@ -12,38 +12,27 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
-      - name: Setup Python
-        uses: actions/setup-python@v5
+      - name: Setup Python 3.12
+        uses: actions/setup-python@v6
         with:
           python-version: "3.12"
 
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          channel: stable
-          flutter-version: 3.44.8
-          cache: true
-
-      - name: Check Flutter
-        run: flutter --version
-
-      - name: Install Flet
+      - name: Install Flet CLI
         run: |
           python -m pip install --upgrade pip
-          pip install flet==0.86.5
-          pip install flet-cli==0.86.5
+          python -m pip install flet-cli==0.86.5
 
-      - name: Build APK
+      - name: Build release APK
         run: |
-          flet build apk --permissions camera --yes
+          flet build apk --python-version 3.12 --permissions camera
 
-      - name: Find APK
+      - name: Show APK files
         run: |
           find . -type f -name "*.apk" -print
 
-      - name: Upload APK
+      - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
           name: IMS-Android-APK
