@@ -11,22 +11,51 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Build Android APK
-        id: build
-        uses: flet-dev/flet-build-action@v1
+      - name: Setup Python
+        uses: actions/setup-python@v6
         with:
-          target: apk
-          runner-python-version: "3.12"
-          bundled-python-version: "3.12"
-          build-number: ${{ github.run_number }}
+          python-version: "3.12"
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.44.8"
+          channel: "stable"
+          cache: true
+
+      - name: Verify Flutter
+        run: |
+          flutter --version
+          flutter doctor -v
+
+      - name: Install Flet
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install flet==0.86.5
+
+      - name: Verify Flet
+        run: |
+          flet --version
+
+      - name: Build APK
+        run: |
+          flet build apk \
+            --python-version 3.12 \
+            --permissions camera \
+            --no-rich-output
+
+      - name: Find APK
+        run: |
+          echo "APK files:"
+          find build -type f -name "*.apk" -print
 
       - name: Upload APK
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@v4
         with:
-          path: ${{ steps.build.outputs.archive-path }}
-          archive: false
+          name: IMS-Android-APK
+          path: build/**/*.apk
           if-no-files-found: error
           overwrite: true
